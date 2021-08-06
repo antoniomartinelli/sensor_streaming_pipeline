@@ -1,10 +1,8 @@
-# Sensor Streaming Pipeline
+# Sensor Streaming Lakehouse
 
 ## Instruction
 The entire stack runs on containerized Docker services.
-
 1. Run *start.sh*
-2. (optional) Run *ngrok* in order to expose Apache Drill REST API.
 
 ## Pipeline
 
@@ -14,7 +12,7 @@ The entire stack runs on containerized Docker services.
 * Kafka Broker (broker)
   - Listen to specific Kafka topic and forward the messages to other services
 
-* MongoDB-Sink (Kafka connector)
+* MongoDB-Sink (connect)
   - Listen to specific Kafka topic and store the messages in MongoDB
 
 * MongoDB (mongo)
@@ -24,8 +22,8 @@ The entire stack runs on containerized Docker services.
   - Query the database via SQL queries
   - Expose REST APIs to execute queries
 
-* Qlik
-  - Dashboard and visualizations
+* Scheduled Aggregator (sched_aggregator)
+  - Runs scheduled aggregation tasks through Drill, store the output in MongoDB
 
 # Snippets
 

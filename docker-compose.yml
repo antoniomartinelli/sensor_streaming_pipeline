@@ -16,8 +16,6 @@ services:
       KAFKA_BROKER_URL: broker:9092
       TRANSACTIONS_TOPIC: measure
       TRANSACTIONS_PER_SECOND: 2
-      LEGIT_TOPIC: streaming.transactions.legit
-      FRAUD_TOPIC: streaming.transactions.fraud
     networks:
       - main_network
 
@@ -33,6 +31,7 @@ services:
   broker:
     image: confluentinc/cp-kafka:latest
     container_name: broker
+    restart: always
     depends_on:
       - zookeeper
     ports:
@@ -93,12 +92,12 @@ services:
       CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
       KAFKA_BROKERS: 1
     volumes:
-      #- ./kafka-connect.properties:/etc/kafka-connect/kafka-connect.properties:ro
       - ./kafka-mongo-sink/sink.properties:/etc/kafka-connect/sink.properties:ro
 
   schema-registry:
     image: confluentinc/cp-schema-registry:latest
     hostname: schema-registry
+    restart: always
     container_name: schema-registry
     depends_on:
       - zookeeper
@@ -132,15 +131,28 @@ services:
   drill:
     build: ./drill/
     container_name: drill
+    restart: always
     ports:
       - '8047:8047'
     tty: true
-    #stdin_open: true
     networks:
       - main_network
     command: /bin/bash
 
+  sched_aggregator:
+    build: ./sched_aggregator
+    restart: always
+    container_name: sched_aggregator
+    depends_on:
+      - broker
+      - zookeeper
+      - connect
+      - mongo
+      - schema-registry
+      - drill
+    networks:
+      - main_network
+
 networks:
   main_network:
     driver: bridge
-
