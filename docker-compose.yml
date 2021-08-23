@@ -110,6 +110,7 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
 
+#### Rest-proxy is disabled in order to save resources on local machine
       #  rest-proxy:
       # image: confluentinc/cp-kafka-rest:5.3.0
       #depends_on:

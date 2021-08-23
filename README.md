@@ -3,6 +3,7 @@
 ## Instruction
 The entire stack runs on containerized Docker services.
 1. Run *start.sh*
+2. (Optional) Use *ngrok tcp 27017* to expose mongoDB to external dashboards
 
 ## Pipeline
 
@@ -24,22 +25,36 @@ The entire stack runs on containerized Docker services.
 
 * Scheduled Aggregator (sched_aggregator)
   - Runs scheduled aggregation tasks through Drill, store the output in MongoDB
+  - Evaluate temporal mean on each minute
+  - The task is scheduled to run every  5 minutes
+  - Only the last 5 minutes are evaluated
 
 # Snippets
-
+* Access to MongoDB via MongoShell
 ```bash
 mongosh "mongodb://localhost:27017/m_db" --username admin1 --password admin1
 ```
 
+* Select all measurements stored in the db 
 ```sql
 SELECT * FROM mongo.m_db.measure;
 ```
 
+* Evaluate 1-minute mean for the measurement 
 ```sql
 SELECT nearestDate(TO_TIMESTAMP(CAST(macro.macro_val.`timestamp` AS int)), 'MINUTE') AS `minute_timestamp`, 
        AVG(CAST(`right`(macro.macro_val.`value`,6) AS float) ) AS `measure_value`
     FROM (SELECT value as macro_val FROM mongo.m_db.measure) macro
     GROUP BY minute_timestamp;
+```
+
+* Evaluate 1-minute mean for the measurement for the last 5 minutes
+```sql
+SELECT nearestDate(TO_TIMESTAMP(CAST(macro.macro_val.`timestamp` AS int)), 'MINUTE') AS `minute_timestamp`, 
+        AVG(CAST(`right`(macro.macro_val.`value`,6) AS float) ) AS `measure_value` 
+        FROM (SELECT value as macro_val FROM mongo.m_db.measure) macro 
+        WHERE nearestDate(TO_TIMESTAMP(CAST(macro.macro_val.`timestamp` AS int)), 'MINUTE') >= DATE_SUB(CURRENT_TIMESTAMP, interval '"+str(batch_time)+"' minute) 
+        GROUP BY minute_timestamp
 ```
 
 # References
