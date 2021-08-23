@@ -16,7 +16,7 @@ The entire stack runs on containerized Docker services.
   - Listen to specific Kafka topic and store the messages in MongoDB
 
 * MongoDB (mongo)
-  - Store the messages received
+  - Store the messages received and the aggregated values from the scheduled task
 
 * Apache Drill (drill)
   - Query the database via SQL queries
