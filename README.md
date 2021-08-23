@@ -29,7 +29,20 @@ The entire stack runs on containerized Docker services.
   - The task is scheduled to run every  5 minutes
   - Only the last 5 minutes are evaluated
 
-# Snippets
+## Examples
+
+* Drill logs shows that the scheduled aggregation query is performed successfully every 5 minutes
+
+
+![drill_1](https://github.com/antoniomartinelli/sensor_streaming_pipeline/blob/main/docs_img/drill_1.png?raw=true)
+
+* Some dashboards realized via Qlik, which connects to MongoDB to fetch up-to-date values
+
+
+![qlik_1](https://github.com/antoniomartinelli/sensor_streaming_pipeline/blob/main/docs_img/qlik_1.png?raw=true)
+![qlik_2](https://github.com/antoniomartinelli/sensor_streaming_pipeline/blob/main/docs_img/qlik_2.png?raw=true)
+
+## Snippets
 * Access to MongoDB via MongoShell
 ```bash
 mongosh "mongodb://localhost:27017/m_db" --username admin1 --password admin1
@@ -57,8 +70,8 @@ SELECT nearestDate(TO_TIMESTAMP(CAST(macro.macro_val.`timestamp` AS int)), 'MINU
         GROUP BY minute_timestamp
 ```
 
-# References
-* https://florimond.dev/en/posts/2018/09/building-a-streaming-fraud-detection-system-with-kafka-and-python/
+## References
 * https://github.com/florimondmanca/kafka-fraud-detector
 * https://github.com/RWaltersMA/mongo-source-sink
 * https://github.com/mongodb/mongo-kafka
+* https://florimond.dev/en/posts/2018/09/building-a-streaming-fraud-detection-system-with-kafka-and-python/
